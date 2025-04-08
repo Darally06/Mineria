@@ -330,6 +330,7 @@ grafo.save("despachos_mapa.html")
 
 #______________
 app = dash.Dash(__name__)
+server = app.server
 
 titulo_estilo = {
     'color': '#57B4BA',
