@@ -10,7 +10,7 @@ import folium
 # 1️⃣ CARGA DE DATOS
 # Base de datos y Mapa de Colombia por municipios
 df = pd.read_csv(r"Productores_Productores_de_B100_y_Etanol_-_Alcohol_Carburante__AUTOMATIZADO__20250314.csv")
-gdf_m = gpd.read_file("mi_dash\Municipios_Interes.geojson")
+gdf_m = gpd.read_file("Municipios_Interes.geojson")
 
 # 2️⃣ DESPACHOS
 # Tabla del total de despachos
