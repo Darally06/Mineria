@@ -5,10 +5,3 @@ Flask==3.0.3
 gunicorn==23.0.0
 jupyter-dash==0.4.2
 matplotlib==3.9.4
-munkres==1.1.4
-ply==3.11
-PyQt5==5.15.10
-pywin32==308
-stringcase==1.2.0
-webencodings==0.5.1
-zstandard==0.23.0
