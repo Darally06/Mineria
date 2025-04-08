@@ -9,7 +9,7 @@ import folium
 
 # 1️⃣ CARGA DE DATOS
 # Base de datos y Mapa de Colombia por municipios
-df = pd.read_csv(r"Productores_Productores_de_B100_y_Etanol_-_Alcohol_Carburante__AUTOMATIZADO__20250314.csv")
+df = pd.read_csv("Productores_Productores_de_B100_y_Etanol_-_Alcohol_Carburante__AUTOMATIZADO__20250314.csv")
 gdf_m = gpd.read_file("Municipios_Interes.geojson")
 
 # 2️⃣ DESPACHOS
@@ -367,171 +367,180 @@ app.layout = html.Div([
             "Cada despacho es referenciado por la fecha, el tipo de comprador"
             "departamento y municipio del proveedor y de despacho, el tipo de producto y el volumen despachado."),
 
-    # DESPACHOS
-    html.H2("Despachos por producto", style=subtitulo_estilo),
-    html.H3("Tabla: Total de Despachos por producto"),
-    dash_table.DataTable(
-        id = 'tabla_despachos',
-        columns=[
-            {'name': 'Producto', 'id': 'Producto'},
-            {'name': 'Cantidad', 'id': 'Cantidad'}
-        ],
-        data = t_desp.to_dict('records'), 
-        style_table={'height': '100px', 'overflowY': 'auto'},  
-        style_cell={'textAlign': 'center'},  
-        style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"},
-        style_data={"textAlign": "center"},
-    ),
-    html.H3("Tabla: Total de Despachos por año"),
-    dash_table.DataTable(
-        id='tabla_despachos_total',
-        columns=[ 
-            {'name': 'Año', 'id': 'Año'},
-            {'name': 'Total Despachos', 'id': 'Total Despachos'},
-            {'name': 'Despachos B100', 'id': 'Despachos B100'},
-            {'name': 'Despachos Etanol', 'id': 'Despachos Etanol'}
-        ],
-        data = table_desp.to_dict('records'),  
-        style_table={'height': '200px', 'overflowY': 'auto'},  
-        style_cell={'textAlign': 'center'}, 
-        style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"}, 
-        style_data={"textAlign": "center"},
-    ),
-    html.P("Exceptuando el 2025, todos en todos los años tienen más de 20.000 despachos, "
-    "siendo 2023 el que menos registros tiene (23.730) y 2024 el de mayor registro (25.940). "
-    "En Colombia se produce en mayor cantidad Biodiesel puro B100 con 69.517 despachos. "
-    "El Etanol tiene casi la mitad de esos despachos 37.107."),
+    dcc.Tabs([
+        dcc.Tab(label='Despachos por producto', children=[
+            # DESPACHOS
+            html.H2("Despachos por producto", style=subtitulo_estilo),
+            html.H3("Tabla: Total de Despachos por producto"),
+            dash_table.DataTable(
+                id = 'tabla_despachos',
+                columns=[
+                    {'name': 'Producto', 'id': 'Producto'},
+                    {'name': 'Cantidad', 'id': 'Cantidad'}
+                ],
+                data = t_desp.to_dict('records'), 
+                style_table={'height': '100px', 'overflowY': 'auto'},  
+                style_cell={'textAlign': 'center'},  
+                style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"},
+                style_data={"textAlign": "center"},
+            ),
+            html.H3("Tabla: Total de Despachos por año"),
+            dash_table.DataTable(
+                id='tabla_despachos_total',
+                columns=[ 
+                    {'name': 'Año', 'id': 'Año'},
+                    {'name': 'Total Despachos', 'id': 'Total Despachos'},
+                    {'name': 'Despachos B100', 'id': 'Despachos B100'},
+                    {'name': 'Despachos Etanol', 'id': 'Despachos Etanol'}
+                ],
+                data = table_desp.to_dict('records'),  
+                style_table={'height': '200px', 'overflowY': 'auto'},  
+                style_cell={'textAlign': 'center'}, 
+                style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"}, 
+                style_data={"textAlign": "center"},
+            ),
+            html.P("Exceptuando el 2025, todos en todos los años tienen más de 20.000 despachos, "
+            "siendo 2023 el que menos registros tiene (23.730) y 2024 el de mayor registro (25.940). "
+            "En Colombia se produce en mayor cantidad Biodiesel puro B100 con 69.517 despachos. "
+            "El Etanol tiene casi la mitad de esos despachos 37.107."),
 
-    html.H3("Gráfico: Evolución mensual de despachos por año"),
-    dcc.Graph(
-        id = "grafico_etanol",
-        figure = fig_etanol,
-    ),
-    dcc.Graph(
-        id = "grafico_b100",
-        figure = fig_b100,
-    ),
-    html.P("Para el Etanol, se observa una fluctuación significativa en la cantidad de despachos"
-    "mes a mes, lo que sugiere que la demanda no es constante a lo largo del año. "
-    "Algunos meses presentan caídas abruptas en ciertos años, como en abril de 2021 y mayo de 2025."
-    "Para el B100, la variabilidad en los despachos es menor en comparación al etanol, "
-    "lo que sugiere que su demanda o producción está mejor regulada."),
+            html.H3("Gráfico: Evolución mensual de despachos por año"),
+            dcc.Graph(
+                id = "grafico_etanol",
+                figure = fig_etanol,
+            ),
+            dcc.Graph(
+                id = "grafico_b100",
+                figure = fig_b100,
+            ),
+            html.P("Para el Etanol, se observa una fluctuación significativa en la cantidad de despachos"
+            "mes a mes, lo que sugiere que la demanda no es constante a lo largo del año. "
+            "Algunos meses presentan caídas abruptas en ciertos años, como en abril de 2021 y mayo de 2025."
+            "Para el B100, la variabilidad en los despachos es menor en comparación al etanol, "
+            "lo que sugiere que su demanda o producción está mejor regulada.")
+        ]), 
 
+        dcc.Tab(label='Volumen despachado', children=[
 
-    # Volumen despachado
-    html.H2("Volúmenes de Producto despachados", style=subtitulo_estilo),
-    html.H3("Gráfico: Distribución de volúmenes"),
-    dcc.Graph(
-        id = "fig_e_v",
-        figure = fig_e_v,
-    ),
-    dcc.Graph(
-        id = "fig_b100_v",
-        figure = fig_b100_v,
-    ),
-    html.P("La distribución del volúmen en galones vendidos es muy amplia en ambos casos."
-           "La producción de Etanol, tiene asimetría negativa, con una producción desde 3.72 hasta más de 12 mil galones. "
-           "Se encuentran observaciones registradas a lo largo de toda la amplitud."
-           "Para el caso del B100, se tienen datos desde 10.4 galones hasta 3.01 millones de galones, "
-           "con una alta asimetría positiva. Dentro de la dispersión, podemos ver dos grandes cúmulos de datos entre 0 a 500 mil galones, "
-           "y el otro de datos dispersos entre los 2 a 2.7 millones de galones. Existen zonas sin presencia de datos, "
-           "lo que podría indicar diferencia entre capacidades de producción."
-           ),
+            # Volumen despachado
+            html.H2("Volúmenes de Producto despachados", style=subtitulo_estilo),
+            html.H3("Gráfico: Distribución de volúmenes"),
+            dcc.Graph(
+                id = "fig_e_v",
+                figure = fig_e_v,
+            ),
+            dcc.Graph(
+                id = "fig_b100_v",
+                figure = fig_b100_v,
+            ),
+            html.P("La distribución del volúmen en galones vendidos es muy amplia en ambos casos."
+                "La producción de Etanol, tiene asimetría negativa, con una producción desde 3.72 hasta más de 12 mil galones. "
+                "Se encuentran observaciones registradas a lo largo de toda la amplitud."
+                "Para el caso del B100, se tienen datos desde 10.4 galones hasta 3.01 millones de galones, "
+                "con una alta asimetría positiva. Dentro de la dispersión, podemos ver dos grandes cúmulos de datos entre 0 a 500 mil galones, "
+                "y el otro de datos dispersos entre los 2 a 2.7 millones de galones. Existen zonas sin presencia de datos, "
+                "lo que podría indicar diferencia entre capacidades de producción."
+                ),
 
-    dcc.Graph(
-        id = "fig_vol_year",
-        figure = fig_vol_year,
-    ),
-    html.P("A lo largo de los años, la producción de B100 es mucho mayor que la de Etanol"
-            "El año 2024, es el año de mayor volumen de ambos protuctos."),
+            dcc.Graph(
+                id = "fig_vol_year",
+                figure = fig_vol_year,
+            ),
+            html.P("A lo largo de los años, la producción de B100 es mucho mayor que la de Etanol"
+                    "El año 2024, es el año de mayor volumen de ambos protuctos.")
+        ]),
 
+        dcc.Tab(label='Tipo de comprador', children=[
+            
+            # Tipo de comprador
+            html.H2("Tipo de comprador", style=subtitulo_estilo),
+            dash_table.DataTable(
+                columns=[
+                    {"name": "Tipo de Comprador", "id": "Producto"},
+                    {"name": "Cantidad", "id": "Cantidad"},
+                    {"name": "Porcentaje", "id": "Porcentaje"}
+                ],
+                data=t_comp.to_dict("records"),
+                style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"},
+                style_cell={"textAlign": "center", "padding": "10px"},
+                style_table={'height': '200px', 'overflowY': 'auto'},  
+                style_data={"textAlign": "center"},
+            )
+        ]),
 
-    # Tipo de comprador
-    html.H2("Tipo de comprador", style=subtitulo_estilo),
-    dash_table.DataTable(
-        columns=[
-            {"name": "Tipo de Comprador", "id": "Producto"},
-            {"name": "Cantidad", "id": "Cantidad"},
-            {"name": "Porcentaje", "id": "Porcentaje"}
-        ],
-        data=t_comp.to_dict("records"),
-        style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"},
-        style_cell={"textAlign": "center", "padding": "10px"},
-        style_table={'height': '200px', 'overflowY': 'auto'},  
-        style_data={"textAlign": "center"},
-    ),
+        dcc.Tab(label='Lugar de despacho', children=[
 
+            # Georeferenciación
+            html.H2("Ubicación del Despacho", style = subtitulo_estilo),
+            html.H3("Tabla: Municipios proveedores"),
+            dash_table.DataTable(
+                columns=[
+                    {"name": "Departamento", "id": "Departamento"},
+                    {"name": "Municipio", "id": "Municipio"},
+                    {"name": "Cantidad de Despachos", "id": "Cantidad de Despachos"},
+                    {"name": "Volumen de Etanol", "id": "Volumen de Etanol"},
+                    {"name": "Volumen de B100", "id": "Volumen de B100"}
+                ],
+                data=tabla_proveedores.to_dict("records"),
+                style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"},
+                style_cell={"textAlign": "center", "padding": "8px"},
+                style_table={'height': '300px', 'overflowY': 'auto'},  # Definir el tamaño de la tabla
+                style_data={"textAlign": "center"},
+            ),
+            html.P("Se identifican 15 municipios proveedores distribuidos en 8 departamentos."
+                "Facatativá (Cundinamarca), es el mayor proveedor con 23,598 despachos, mientras que Barranquilla reporta solo 5 despachos."
+                "Ningún municipio exporta ambos productos. 8 municipios exportan únicamente B100, mientras que 7 exportan solo Etanol."
+                "Meta es el departamento con mayor cantidad de despachos registrados, siendo el único que exporta ambos productos."),
+            html.H3("Tabla: Municipios de Destino"),
+            dash_table.DataTable(
+                columns=[
+                    {"name": "Departamento", "id": "Departamento"},
+                    {"name": "Municipio", "id": "Municipio"},
+                    {"name": "Cantidad de Despachos", "id": "Cantidad de Despachos"},
+                    {"name": "Volumen de Etanol", "id": "Volumen de Etanol"},
+                    {"name": "Volumen de B100", "id": "Volumen de B100"}
+                ],
+                data=tabla_destino.to_dict("records"),
+                style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"},
+                style_cell={"textAlign": "center", "padding": "8px"},
+                style_table={'height': '300px', 'overflowY': 'auto'},  # Definir el tamaño de la tabla
+                style_data={"textAlign": "center"},
+            ), 
+            html.P("Bogotá, D.C. es el destino con mayor recepción de ambos productos, acumulando más de 93,000 despachos. "
+                "Mientras que Nariño es el departamento con menor cantidad de despachos recibidos, con 130 despachos."
+                "Uribia (La Guajira) recibe solo B100 y no tiene consumo reportado de Etanol."
+                "Bogotá lidera la recepción de ambos productos."
+                "Medellín (Antioquia), es el municipio con menor cantidad de despachos recibidos, solo 67."),
 
-    # Georeferenciación
-    html.H2("Ubicación del Despacho", style = subtitulo_estilo),
-    html.H3("Tabla: Municipios proveedores"),
-    dash_table.DataTable(
-        columns=[
-            {"name": "Departamento", "id": "Departamento"},
-            {"name": "Municipio", "id": "Municipio"},
-            {"name": "Cantidad de Despachos", "id": "Cantidad de Despachos"},
-            {"name": "Volumen de Etanol", "id": "Volumen de Etanol"},
-            {"name": "Volumen de B100", "id": "Volumen de B100"}
-        ],
-        data=tabla_proveedores.to_dict("records"),
-        style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"},
-        style_cell={"textAlign": "center", "padding": "8px"},
-        style_table={'height': '300px', 'overflowY': 'auto'},  # Definir el tamaño de la tabla
-        style_data={"textAlign": "center"},
-    ),
-    html.P("Se identifican 15 municipios proveedores distribuidos en 8 departamentos."
-        "Facatativá (Cundinamarca), es el mayor proveedor con 23,598 despachos, mientras que Barranquilla reporta solo 5 despachos."
-        "Ningún municipio exporta ambos productos. 8 municipios exportan únicamente B100, mientras que 7 exportan solo Etanol."
-        "Meta es el departamento con mayor cantidad de despachos registrados, siendo el único que exporta ambos productos."),
-    html.H3("Tabla: Municipios de Destino"),
-    dash_table.DataTable(
-        columns=[
-            {"name": "Departamento", "id": "Departamento"},
-            {"name": "Municipio", "id": "Municipio"},
-            {"name": "Cantidad de Despachos", "id": "Cantidad de Despachos"},
-            {"name": "Volumen de Etanol", "id": "Volumen de Etanol"},
-            {"name": "Volumen de B100", "id": "Volumen de B100"}
-        ],
-        data=tabla_destino.to_dict("records"),
-        style_header={"backgroundColor": "#A0C878", "color": "white", "fontWeight": "bold"},
-        style_cell={"textAlign": "center", "padding": "8px"},
-        style_table={'height': '300px', 'overflowY': 'auto'},  # Definir el tamaño de la tabla
-        style_data={"textAlign": "center"},
-    ), 
-    html.P("Bogotá, D.C. es el destino con mayor recepción de ambos productos, acumulando más de 93,000 despachos. "
-        "Mientras que Nariño es el departamento con menor cantidad de despachos recibidos, con 130 despachos."
-        "Uribia (La Guajira) recibe solo B100 y no tiene consumo reportado de Etanol."
-        "Bogotá lidera la recepción de ambos productos."
-        "Medellín (Antioquia), es el municipio con menor cantidad de despachos recibidos, solo 67."),
+            html.H3("Mapa: Ubicación de los municipios Proveedores y Destino"),
+            html.Iframe(
+                srcDoc=open("mapa_municipios.html", "r", encoding="utf-8").read(),
+                width="100%",
+                height="600px")
+        ]),
 
-    html.H3("Mapa: Ubicación de los municipios Proveedores y Destino"),
-    html.Iframe(
-        srcDoc=open("mapa_municipios.html", "r", encoding="utf-8").read(),
-        width="100%",
-        height="600px"
-    ),
-
-    # Relaciones proveedor-destino
-    html.H2("Relaciones Proveedor y destino", style = subtitulo_estilo),
-    dcc.Graph(
-        id = "fig_rel_p",
-        figure = fig_rel_p,
-    ),
-    html.P("Los municipios de El cerrito(Valle del Cauca), Miranda(Cauca) y Santa Marta (Magdalena), "
-    "son los municipios que más relaciones de envio tienen, cada uno envia a 6 municipios. "),
-    dcc.Graph(
-        id = "fig_rel_d",
-        figure = fig_rel_d,
-    ),
-    html.P("Los municipios que más envio de producto reciben son Bogotá D.C. y Cartagena de Indias, "
-    "que reciben de 13 y 12 municipios respectivamente."),
-    html.H3("Mapa: Despachos entre Municipios"),
-    html.Iframe(
-        srcDoc=open("despachos_mapa.html", "r", encoding="utf-8").read(),
-        width="100%",
-        height="600px"
-    ),
-
+        dcc.Tab(label='Relaciones Proveedor-Destino', children=[
+            # Relaciones proveedor-destino
+            html.H2("Relaciones Proveedor y destino", style = subtitulo_estilo),
+            dcc.Graph(
+                id = "fig_rel_p",
+                figure = fig_rel_p,
+            ),
+            html.P("Los municipios de El cerrito(Valle del Cauca), Miranda(Cauca) y Santa Marta (Magdalena), "
+            "son los municipios que más relaciones de envio tienen, cada uno envia a 6 municipios. "),
+            dcc.Graph(
+                id = "fig_rel_d",
+                figure = fig_rel_d,
+            ),
+            html.P("Los municipios que más envio de producto reciben son Bogotá D.C. y Cartagena de Indias, "
+            "que reciben de 13 y 12 municipios respectivamente."),
+            html.H3("Mapa: Despachos entre Municipios"),
+            html.Iframe(
+                srcDoc=open("despachos_mapa.html", "r", encoding="utf-8").read(),
+                width="100%",
+                height="600px")
+        ]),
+    ]),
 ])
 
 if __name__ == "__main__":
